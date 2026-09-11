@@ -25,7 +25,9 @@ For Software: **Languages:** TypeScript, Python
 
 ### Implementation
 For Software:Installation
+
 bash
+
 Clone the repo, then from the project root:
 cp .env.example .env          # add your GROQ_API_KEY
 
