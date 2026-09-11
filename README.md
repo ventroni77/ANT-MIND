@@ -1,21 +1,56 @@
 # FORMICA 🐜
+## Basic Details
+### Team Name: [VENTRON]
 
-**A colony of 400 ants solves problems no ant understands. Give twelve of them an inner life and the whole thing falls apart.**
+Team Members
+Team Lead: [Chandra Prakash N] - [College of engineering Chengannur]
+Member 2: [Faheem Ibnu Rashif] - [College of engineering Chengannur]
 
-Drag the consciousness slider and watch measured food throughput collapse by ~85%. Drag it back and watch the colony recover in under ten seconds. Nothing about the collapse is scripted.
+### Project Description
+A colony of 400 simulated ants forages via pheromone-trail stigmergy — pure instinct, no individual plan. We give twelve of them LLM-powered minds capable of doubting the trail and inventing beliefs, then watch those ideas spread to the rest of the colony and collapse measured food throughput by ~85%, live and unscripted.
 
-## The paradox
+### The Problem (that doesn't exist)
+Ant colonies have been optimizing foraging routes for roughly 100 million years without a single ant ever understanding the route it's walking — and somehow nobody has stopped to ask whether that's actually a problem. Nobody needed to know what happens if an ant starts thinking for itself, because ants were never supposed to think in the first place. We decided this gap in scientific urgency needed fixing, so we gave twelve out of four hundred ants the ability to doubt the pheromone trail, form opinions, and invent ideologies — a problem literally no ant, colony, or entomologist ever asked us to solve.
 
-Real ants are dumb on purpose. An ant deposits pheromone, follows the strongest gradient it can smell, and never forms an opinion about any of it. Shorter paths get walked more often, so they accumulate more pheromone, so they get walked more often still. The route optimises itself. No ant knows the route exists..
+### The Solution (that nobody asked for)
+We hooked twelve unlucky ants up to an actual LLM brain, gave them memory, names, and the ability to form opinions, then let them loose in a colony of 388 perfectly content instinct-driven ants who were doing just fine without any of this. The twelve thinkers start questioning the pheromone trail, inventing doctrines like "Border Law," and — because ideas are just as contagious as scent in our simulation — spread their beliefs through a second pheromone channel to ants who have literally zero capacity to understand what they're now fervently patrolling. The result: food collection drops by ~85%, meetings start happening, a shadow above the colony gets mistaken for a god about 60% of the time, and somewhere in there we accidentally built a very convincing argument that consciousness is a productivity bug. Drag the slider back to zero and watch everyone forget it ever happened, mid-sentence.
 
-This is **stigmergy**: coordination through traces left in a shared environment rather than through communication or deliberation. It works precisely *because* no individual reasons about the global picture. There is no plan to disagree with.
+# Technical Details
+## Technologies/Components Used
+For Software: **Languages:** TypeScript, Python
+* **Frameworks:** FastAPI (backend server), PixiJS (real-time rendering)
+* **Libraries:** Groq SDK (LLM inference via llama-3.3-70b, JSON mode), WebSocket (client-server communication), browser SpeechSynthesis API (per-ant voice generation)
+* **Tools:** Node.js / npm, Python venv, seeded RNG for deterministic/reproducible simulation runs, `npm run check` and `npm run thesis` custom test/verification scripts
 
-So: what happens if an ant can doubt the trail?
+### Implementation
+For Software:Installation
+bash
+# Clone the repo, then from the project root:
+cp .env.example .env          # add your GROQ_API_KEY
 
-FORMICA wires twelve of the four hundred to an LLM. They receive real sensory input and return one of sixteen fixed motor primitives, plus, occasionally, an invented ideology. Those ideologies spread through a second pheromone channel to ants that have no brain at all — **ideological stigmergy**. Twelve thinkers infect four hundred bodies.
+python -m venv .venv
+.venv/Scripts/python -m pip install -r requirements.txt
 
-The colony does not become smarter. It stops eating.
+cd client
+npm install
 
+### Run
+bash
+# Terminal 1 — backend (from project root)
+.venv/Scripts/python -m uvicorn server.main:app --reload
+
+# Terminal 2 — frontend
+cd client
+npm run dev
+
+Then open http://localhost:5173 in your browser.
+
+# Screenshots (Add at least 3)
+![Screenshot1](https://drive.google.com/file/d/1f34B74zQ9d3h1jUOe5rRgSpDtF2u-tV2/view?usp=drive_link)
+![Screenshot2](https://drive.google.com/file/d/1UIGRci5uVWJJ-1nNGx1azQmG5zKPRMzm/view?usp=drive_link)
+![Screenshot3](https://drive.google.com/file/d/1Gtcet2paLcjKgaygUn8YYj-orF1USfKZ/view?usp=drive_link)
+
+# Diagrams
 ## Architecture
 
 ```
@@ -45,106 +80,19 @@ The colony does not become smarter. It stops eating.
    │                          reports source="offline" → red badge in the UI         │
    └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+# Build Photos
+![Components](https://drive.google.com/file/d/1F2I9qBDHKbQBT3tij3ZES0OxKiaN7ikl/view?usp=drive_link) 
+![Components](https://drive.google.com/file/d/1BND7x9rm8Ru7DYtARoOAaoA7jAkNzj85/view?usp=drive_link)
+![Build](https://drive.google.com/file/d/1riMM4nlpSG0JIB0S5Fp33w7qmPWDOhFS/view?usp=drive_link)
+![Build](https://drive.google.com/file/d/1ZFKBz6_8JAaMVchxA4Q8LIXesfBkNBtl/view?usp=drive_link)
+![Build](https://drive.google.com/file/d/13NaXMxQ0lzcjUAd0R-mfKUvXMg-Iq7GO/view?usp=drive_link)
+![Final](https://drive.google.com/file/d/13LO-RM5G_hK0LE8kC3kbYz9Id3xuYPNl/view?usp=drive_link)
 
-The simulation never waits for the network. If the cortex is slow, the colony keeps foraging and the thoughts arrive when they arrive — which reads as hesitation rather than lag.
 
-## How consciousness breaks the colony
+### Project Demo
+# Video
+![vedio](https://drive.google.com/file/d/1-HBz79wH6puewb1KICc2RHM-9-cmuAzA/view?usp=sharing)
 
-The slider `k` ∈ [0,1] does four things, all mechanical:
-
-| Mechanism | Effect |
-|---|---|
-| **Cortex count** | `round(k × 12)` ants get an LLM brain, a name, memory, and beliefs |
-| **Trail fidelity** | Conscious ants lay weaker, noisier trails: `1 − 0.75k` |
-| **Trail trust** | Conscious ants weight the gradient less and their own reasoning more: `1 − 0.8k(1 − conviction)` |
-| **Deliberation tax** | Thinking costs seconds not moved. Ants stop mid-trail to consider things |
-
-Ideologies then do the rest. A believing ant switches to whatever primitive its ideology implies, and deposits that ideology as it walks. `GATHER_WITH_KIN` clumps the faithful into meetings. `BLOCK_PATH` parks them on the trail. Neither shape is ever drawn — both fall out of steering.
-
-Conviction decays, so ideas die if nothing reinforces them. Hunger erodes doctrine, so the colony can be crippled but never fully flatlines.
-
-## Verified, not asserted
-
-`npm run check` runs the real simulation headlessly and measures the claims:
-
-```
---- M1: living colony, zero AI ---
-PASS  food delivered to nest             496 units
-PASS  pheromone trails formed            1920 cells
-PASS  near pile more travelled           near 4765 vs far 0
-PASS  identical after 20s                same seed = same run
-PASS  different seed diverges
-
---- M5: consciousness collapses productivity ---
-PASS  ideology spread past its author    271 believers from 1 coiner
-PASS  food/min collapsed                 876 -> 118 /min
-PASS  trail coherence fell               0.960 -> 0.932
-PASS  idle fraction rose                 0% -> 59%
-PASS  productivity delta negative        -87%
-PASS  recovers when slider drops         118 -> 666 /min
-
---- M7: malformed input never crashes ---
-PASS  bad goal falls back to WANDER
-PASS  bad meme primitive rejected
-
---- perf ---
-PASS  sim step under 4ms                 0.35ms/frame for 400 ants
-```
-
-`npm run thesis` runs the demo protocol — 60s at k=0, 60s at k=1, 60s at k=0 — plus a ten-minute soak:
-
-```
-k=0   food/min= 450  coherence=0.960  meetings=0
-k=1   food/min=  78  coherence=0.946  meetings=13  believers=278  delta=-94%
-k=0   food/min= 360  recovered to 60% of baseline in 8s
-
-collapse -83%   recovery within 12s: YES
-10 sim-minutes in 14.4s wall — no memory growth
-```
-
-## Run it
-
-```bash
-cp .env.example .env          # add your GROQ_API_KEY
-
-python -m venv .venv && .venv/Scripts/python -m pip install -r requirements.txt
-.venv/Scripts/python -m uvicorn server.main:app --reload
-
-cd client && npm install && npm run dev
-```
-
-Open http://localhost:5173. Without a key the offline cortex takes over and labels itself in red — the colony still runs, it just thinks in a grammar instead of a language model.
-
-## Controls
-
-| Key | Action |
-|---|---|
-| **slider** | Consciousness 0–100% |
-| **MERCY** | Slider to zero, voices cut mid-word |
-| `1` drag | Chalk — a line ants can perceive but that does nothing |
-| `2` click | Drop food |
-| `3` drag | Wall |
-| `E` | Eraser |
-| `G` hold | The Hand — an unexplained shadow |
-| `⇧ click` | Smite — erase an ant, witnesses remember |
-| `click` | Inspect an ant: belief, memory, conviction |
-| `space` `.` `R` | Pause · step · reset (seed preserved) |
-| `M` `~` `F` | Mute · operator panel · reset camera |
-| wheel / drag | Zoom · pan |
-
-## The boundary test
-
-Draw a chalk line across a working trail at k=0. The ants walk straight over it; it has no physics and nothing to say to an instinct.
-
-Raise the slider and draw it again. A mind perceives `chalk_near: true`, stops, and says something about it. If it reaches a conclusion it coins a doctrine — *Border Law*, `PATROL_LINE` — which spreads down the same trail the ants were using to eat, and ants with no brain at all begin patrolling a line that was never there.
-
-The line does nothing. The belief about the line does everything.
-
-## Design rules held throughout
-
-- No scripted events, no `if (tick == 180)`, no timers that spawn behaviour
-- No hardcoded formations — rings, queues and clumps emerge from steering
-- No fake thoughts on the primary path; the fallback labels itself on screen
-- No hardcoded meme semantics — the LLM invents the ideology *and* declares its behavioural primitive at runtime
-- Every metric measured from the population, never assigned
-- Deterministic core: seeded RNG, fixed timestep
+## Team Contributions
+- [Chandra Prakash N]: [Bankend + Iteration]
+- [Faheem Ibnu Rashif]: [Frontend + Testing]
