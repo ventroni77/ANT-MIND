@@ -20,12 +20,12 @@ export class AntLayer {
   private glowSprites: Sprite[] = [];
   private nameTexts: Text[] = [];
   private antTex: Texture;
-  private dotTex: Texture;
+  private crumbTex: Texture;
   private glowTex: Texture;
 
   constructor(renderer: Renderer, count: number) {
     this.antTex = AntLayer.makeAntTexture(renderer);
-    this.dotTex = AntLayer.makeDotTexture(renderer, 0x7dff9b, 3);
+    this.crumbTex = AntLayer.makeCrumbTexture(renderer);
     this.glowTex = AntLayer.makeGlowTexture(renderer);
 
     this.root.addChild(this.glows, this.bodies, this.labels);
@@ -43,7 +43,7 @@ export class AntLayer {
       this.bodies.addChild(s);
       this.sprites.push(s);
 
-      const c = new Sprite(this.dotTex);
+      const c = new Sprite(this.crumbTex);
       c.anchor.set(0.5);
       c.visible = false;
       this.bodies.addChild(c);
@@ -61,31 +61,84 @@ export class AntLayer {
   }
 
   static makeAntTexture(renderer: Renderer): Texture {
+    // Anatomically-shaped ant facing +x: gaster, petiole (waist), thorax, head,
+    // six jointed legs, two antennae. Drawn large then downscaled for smooth edges.
     const g = new Graphics();
-    // abdomen, thorax, head along +x
-    g.ellipse(-3.2, 0, 3.1, 2.3).fill(0x1b1410);
-    g.ellipse(0.4, 0, 1.7, 1.5).fill(0x241a14);
-    g.ellipse(3.2, 0, 2.0, 1.7).fill(0x2e211a);
-    // legs
-    g.moveTo(0, 0).lineTo(-2, -4).moveTo(0, 0).lineTo(-2, 4);
-    g.moveTo(1, 0).lineTo(2, -4).moveTo(1, 0).lineTo(2, 4);
-    g.stroke({ width: 0.7, color: 0x16100c });
-    const tex = renderer.generateTexture({ target: g, resolution: 3 });
+    const body = 0x1a120c;
+    const sheen = 0x3a2a1e;
+    const leg = 0x140d09;
+
+    // legs first, so the body sits on top. Three pairs, bent at a knee joint,
+    // swept slightly so they read as walking rather than a splat.
+    const legPairs: [number, number, number][] = [
+      // [attach x, knee spread, foot reach]
+      [2.4, 3.2, 6.0], // front, swept forward
+      [0.2, 3.6, 6.6], // middle
+      [-2.0, 3.2, 6.2], // rear, swept back
+    ];
+    for (const [ax, spread, reach] of legPairs) {
+      for (const side of [-1, 1]) {
+        const kneeX = ax + (ax > 0 ? 1.2 : -1.2);
+        const kneeY = side * spread;
+        const footX = ax + (ax > 0 ? 2.0 : -2.4);
+        const footY = side * reach;
+        g.moveTo(ax * 0.4, side * 0.6)
+          .lineTo(kneeX, kneeY)
+          .lineTo(footX, footY);
+      }
+    }
+    g.stroke({ width: 0.9, color: leg, cap: 'round', join: 'round' });
+
+    // antennae
+    for (const side of [-1, 1]) {
+      g.moveTo(5.4, side * 0.6)
+        .lineTo(7.6, side * 1.8)
+        .lineTo(9.2, side * 1.4);
+    }
+    g.stroke({ width: 0.7, color: leg, cap: 'round', join: 'round' });
+
+    // gaster (rear, largest), thorax (middle), head (front)
+    g.ellipse(-4.0, 0, 4.0, 3.0).fill(body);
+    g.ellipse(-0.4, 0, 1.4, 1.0).fill(body); // petiole / waist
+    g.ellipse(1.8, 0, 2.6, 2.0).fill(body); // thorax (alitrunk)
+    g.ellipse(5.4, 0, 2.4, 2.1).fill(body); // head
+
+    // subtle top sheen so the chitin catches light
+    g.ellipse(-4.6, -0.9, 2.2, 1.2).fill({ color: sheen, alpha: 0.5 });
+    g.ellipse(5.0, -0.7, 1.2, 0.8).fill({ color: sheen, alpha: 0.5 });
+
+    // mandibles
+    for (const side of [-1, 1]) {
+      g.moveTo(7.4, side * 0.9)
+        .lineTo(8.8, side * 1.6);
+    }
+    g.stroke({ width: 0.8, color: leg, cap: 'round' });
+
+    const tex = renderer.generateTexture({ target: g, resolution: 4 });
     g.destroy();
     return tex;
   }
 
-  static makeDotTexture(renderer: Renderer, color: number, r: number): Texture {
-    const g = new Graphics().circle(0, 0, r).fill(color);
-    const tex = renderer.generateTexture({ target: g, resolution: 3 });
+  /** A carried morsel: an irregular leaf-fragment held out at the mandibles. */
+  static makeCrumbTexture(renderer: Renderer): Texture {
+    const g = new Graphics();
+    g.poly([-2.6, -1.8, 2.4, -2.6, 3.2, 1.4, -0.6, 3.0, -3.0, 1.2]).fill(0x5f8a3a);
+    g.poly([-2.6, -1.8, 2.4, -2.6, 3.2, 1.4, -0.6, 3.0, -3.0, 1.2]).stroke({
+      width: 0.6,
+      color: 0x3c5d22,
+    });
+    // midrib + highlight
+    g.moveTo(-2.4, -1.4).lineTo(2.8, 0.8).stroke({ width: 0.6, color: 0x3c5d22, alpha: 0.8 });
+    g.ellipse(0, -0.4, 1.0, 0.7).fill({ color: 0x82b055, alpha: 0.6 });
+    const tex = renderer.generateTexture({ target: g, resolution: 4 });
     g.destroy();
     return tex;
   }
 
   static makeGlowTexture(renderer: Renderer): Texture {
     const g = new Graphics();
-    for (let i = 8; i > 0; i--) {
-      g.circle(0, 0, i * 1.7).fill({ color: 0xb079ff, alpha: 0.045 });
+    for (let i = 10; i > 0; i--) {
+      g.circle(0, 0, i * 1.3).fill({ color: 0xb079ff, alpha: 0.03 });
     }
     const tex = renderer.generateTexture({ target: g, resolution: 2 });
     g.destroy();
@@ -123,18 +176,28 @@ export class AntLayer {
         this.nameTexts[i].visible = false;
         continue;
       }
+      // the texture is drawn ~4x larger than world scale for crisp edges
+      const base = 0.5;
       s.visible = true;
       s.x = a.x;
       s.y = a.y;
-      s.rotation = a.angle;
-      s.scale.set(a.isMind ? 1.55 : 1);
-      s.tint = a.isMind ? 0x5a3f6b : 0xffffff;
+      // a subtle gait: the body yaws a hair as it walks, from its own position
+      const gait = a.lastSpeed > 5 ? Math.sin(now * 0.02 + a.id) * 0.08 : 0;
+      s.rotation = a.angle + gait;
+      s.scale.set(base * (a.isMind ? 1.45 : 1));
+      // instinct ants keep natural chitin colour; minds take a faint violet cast
+      s.tint = a.isMind ? 0x9a7fb5 : 0xffffff;
 
       const c = this.carry[i];
       if (a.carrying) {
         c.visible = true;
-        c.x = a.x + Math.cos(a.angle) * 5;
-        c.y = a.y + Math.sin(a.angle) * 5;
+        // held ahead at the mandibles, bobbing gently with the stride
+        const reach = 6.2;
+        const bob = Math.sin(now * 0.02 + a.id) * 0.5;
+        c.x = a.x + Math.cos(a.angle) * reach - Math.sin(a.angle) * bob;
+        c.y = a.y + Math.sin(a.angle) * reach + Math.cos(a.angle) * bob;
+        c.rotation = a.angle + now * 0.001;
+        c.scale.set(base * 0.9);
       } else c.visible = false;
 
       const g = this.glowSprites[i];

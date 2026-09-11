@@ -1,4 +1,4 @@
-import { Sprite, Texture, ImageSource, BLEND_MODES } from 'pixi.js';
+import { Sprite, Texture, ImageSource } from 'pixi.js';
 import { C, GRID_W, GRID_H } from '../sim/constants';
 import type { World } from '../sim/World';
 
@@ -20,6 +20,12 @@ function hsv(h: number, s: number, v: number): [number, number, number] {
   return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
 }
 
+/**
+ * Trails as worn earth, not a heatmap. Ants tramp the soil into paler, packed
+ * paths, so busy routes read as trodden dirt over the terrain rather than glowing
+ * lines. Rendered with normal alpha compositing over the terrain, never additive.
+ * Memes are faint coloured stains of territory. Danger scorches. Chalk is dust.
+ */
 export class PheromoneLayer {
   sprite: Sprite;
   private buf: Uint8Array;
@@ -48,7 +54,7 @@ export class PheromoneLayer {
     this.sprite = new Sprite(new Texture({ source: this.source }));
     this.sprite.width = C.WORLD_W;
     this.sprite.height = C.WORLD_H;
-    this.sprite.blendMode = 'add' as unknown as BLEND_MODES;
+    // normal blending over the terrain — this is the key change away from the heatmap
   }
 
   update(w: World, nowMs: number) {
@@ -64,38 +70,68 @@ export class PheromoneLayer {
       const danger = Math.min(1, p.danger[i] / 90);
       const chalk = p.chalk[i] > 0 ? 1 : 0;
       const wall = p.wall[i];
-
-      // base: food = cyan-green, home = dim blue
-      let r = danger * 235;
-      let g = food * 200 + home * 30;
-      let b = food * 150 + home * 120;
-
-      // meme colour rides on top
       const mid = p.memeId[i];
+
+      // Trodden earth: the more traffic, the more packed and pale the dirt.
+      // Foraging (food) and homing (home) trails both wear the ground; we take
+      // the stronger so a used route is one coherent path, not two colours.
+      const traffic = Math.max(food, home * 0.85);
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let alpha = 0;
+
+      if (traffic > 0.01) {
+        // packed soil is a touch warmer and lighter than the surrounding ground
+        const t = Math.pow(traffic, 0.7);
+        r = 120 + t * 60;
+        g = 96 + t * 52;
+        b = 72 + t * 40;
+        alpha = Math.min(0.72, 0.12 + t * 0.6);
+      }
+
+      // ideological territory: a thin coloured stain washed over the dirt
       if (mid !== 0) {
         const str = Math.min(1, p.memeStr[i] / 90);
-        const hue = (mid * 47 + ((mid * 129) % 360)) % 360;
-        const [mr, mg, mb] = hsv(hue, 0.85, str);
-        r += mr * 0.85;
-        g += mg * 0.55;
-        b += mb * 0.85;
+        const hue = w.memes.get(mid)?.hue ?? (mid * 47) % 360;
+        const [mr, mg, mb] = hsv(hue, 0.7, 1);
+        const ma = Math.min(0.5, str * 0.5);
+        // composite the stain over whatever trail colour is there
+        r = r * (1 - ma) + mr * ma;
+        g = g * (1 - ma) + mg * ma;
+        b = b * (1 - ma) + mb * ma;
+        alpha = Math.max(alpha, ma);
       }
 
-      if (chalk) {
-        r += 190;
-        g += 190;
-        b += 190;
+      // danger: scorched, dark red
+      if (danger > 0.02) {
+        const da = Math.min(0.8, danger * 0.8);
+        r = r * (1 - da) + 150 * da;
+        g = g * (1 - da) + 30 * da;
+        b = b * (1 - da) + 24 * da;
+        alpha = Math.max(alpha, da);
       }
+
+      // chalk: pale dust sitting on top
+      if (chalk) {
+        r = 214;
+        g = 210;
+        b = 198;
+        alpha = 0.9;
+      }
+
+      // wall: solid dark stone (fully opaque, drawn here for simplicity)
       if (wall) {
-        r = 90;
-        g = 80;
-        b = 110;
+        r = 58;
+        g = 52;
+        b = 60;
+        alpha = 1;
       }
 
       d[o] = r > 255 ? 255 : r;
       d[o + 1] = g > 255 ? 255 : g;
       d[o + 2] = b > 255 ? 255 : b;
-      d[o + 3] = 255;
+      d[o + 3] = (alpha > 1 ? 1 : alpha) * 255;
     }
 
     this.ctx2d.putImageData(this.imageData, 0, 0);

@@ -3,6 +3,7 @@ import { Application, Container } from 'pixi.js';
 import { C } from '../sim/constants';
 import { World } from '../sim/World';
 import { buildPerceive } from '../sim/Perception';
+import { TerrainLayer } from './TerrainLayer';
 import { PheromoneLayer } from './PheromoneLayer';
 import { AntLayer } from './AntLayer';
 import { ToolLayer } from './ToolLayer';
@@ -25,7 +26,7 @@ export default function Stage() {
 
     (async () => {
       await app.init({
-        background: 0x07060a,
+        background: 0x1a120c,
         antialias: false,
         resizeTo: host,
         preference: 'webgl',
@@ -39,11 +40,12 @@ export default function Stage() {
       const camera = new Container();
       app.stage.addChild(camera);
 
+      const terrainLayer = new TerrainLayer();
       const pheroLayer = new PheromoneLayer();
       const toolLayer = new ToolLayer(app.renderer);
       antLayer = new AntLayer(app.renderer, C.N_ANTS);
 
-      camera.addChild(pheroLayer.sprite, toolLayer.root, antLayer.root);
+      camera.addChild(terrainLayer.sprite, pheroLayer.sprite, toolLayer.root, antLayer.root);
       // tint must sit above the ants
       toolLayer.root.removeChild(toolLayer.tintSprite);
       camera.addChild(toolLayer.tintSprite);

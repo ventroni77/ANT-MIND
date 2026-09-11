@@ -40,27 +40,50 @@ export class ToolLayer {
     const g = this.g;
     g.clear();
 
-    // nest
-    g.circle(C.NEST.x, C.NEST.y, C.ANT.NEST_R).fill({ color: 0x3a2a1c, alpha: 0.75 });
-    g.circle(C.NEST.x, C.NEST.y, C.ANT.NEST_R).stroke({ width: 2, color: 0x6b5136, alpha: 0.9 });
-    g.circle(C.NEST.x, C.NEST.y, 9).fill(0x120c08);
+    // nest: a raised earth mound with concentric packed rings and a dark entrance
+    const nr = C.ANT.NEST_R;
+    g.circle(C.NEST.x, C.NEST.y, nr + 8).fill({ color: 0x2a1e14, alpha: 0.55 });
+    g.circle(C.NEST.x, C.NEST.y, nr + 2).fill({ color: 0x5a4228, alpha: 0.85 });
+    g.circle(C.NEST.x, C.NEST.y, nr - 4).fill({ color: 0x6e5230, alpha: 0.9 });
+    g.circle(C.NEST.x, C.NEST.y, nr - 12).fill({ color: 0x4a3721, alpha: 0.9 });
+    // entrance crater
+    g.circle(C.NEST.x, C.NEST.y, 11).fill(0x0d0906);
+    g.circle(C.NEST.x, C.NEST.y, 11).stroke({ width: 2, color: 0x7a5c38, alpha: 0.7 });
 
-    // food piles: size tracks remaining amount
+    // food piles: clustered seeds/grains, deterministically scattered per pile
     for (const f of w.food) {
-      const r = 5 + Math.sqrt(f.amount) * 1.5;
-      g.circle(f.x, f.y, r).fill({ color: 0x4d7a2e, alpha: 0.85 });
-      g.circle(f.x, f.y, r).stroke({ width: 1, color: 0x8fd45a, alpha: 0.7 });
+      const r = 6 + Math.sqrt(f.amount) * 1.4;
+      // damp patch of ground under the pile
+      g.circle(f.x, f.y, r + 3).fill({ color: 0x3c3016, alpha: 0.4 });
+      const seeds = Math.min(46, 6 + Math.floor(f.amount / 9));
+      let s = (Math.floor(f.x) * 73856093) ^ (Math.floor(f.y) * 19349663);
+      const rnd = () => {
+        s = (s * 1103515245 + 12345) & 0x7fffffff;
+        return s / 0x7fffffff;
+      };
+      for (let n = 0; n < seeds; n++) {
+        const ang = rnd() * Math.PI * 2;
+        const dist = Math.sqrt(rnd()) * r;
+        const sx = f.x + Math.cos(ang) * dist;
+        const sy = f.y + Math.sin(ang) * dist;
+        const sr = 1.4 + rnd() * 1.3;
+        const tone = rnd();
+        g.ellipse(sx, sy, sr, sr * 0.78)
+          .fill({ color: tone < 0.5 ? 0x6f9838 : tone < 0.8 ? 0x88b04b : 0xc8a24a });
+      }
     }
 
-    // private hoards
-    for (const s of w.stashes) {
-      const r = 3 + Math.sqrt(s.amount) * 1.3;
-      g.circle(s.x, s.y, r).fill({ color: 0x7a6a2e, alpha: 0.8 });
+    // private hoards: a small scatter of hidden grains
+    for (const st of w.stashes) {
+      const r = 3 + Math.sqrt(st.amount) * 1.2;
+      g.circle(st.x, st.y, r + 2).fill({ color: 0x33290f, alpha: 0.4 });
+      g.ellipse(st.x, st.y, r * 0.7, r * 0.55).fill({ color: 0x9a842f, alpha: 0.9 });
     }
 
-    // corpses
+    // corpses: a curled dark husk with faint danger stain
     for (const c of w.corpses) {
-      g.circle(c.x, c.y, 2.5).fill({ color: 0x8a2c2c, alpha: 0.85 });
+      g.circle(c.x, c.y, 4).fill({ color: 0x5a1616, alpha: 0.35 });
+      g.ellipse(c.x, c.y, 2.6, 1.8).fill({ color: 0x140d09, alpha: 0.9 });
     }
 
     if (w.handActive) {
@@ -69,7 +92,8 @@ export class ToolLayer {
       this.shadow.y = w.cursor.y;
     } else this.shadow.visible = false;
 
-    this.tint.alpha = 0.22 * w.consciousness;
+    // a restrained dusk shift as minds take over; capped so the ground stays legible
+    this.tint.alpha = 0.16 * w.consciousness;
   }
 
   destroy() {
