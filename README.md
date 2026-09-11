@@ -46,9 +46,9 @@ npm run dev
 Then open http://localhost:5173 in your browser.
 
 # Screenshots (Add at least 3)
-C:\Users\user\ANT-MIND\ANT-MIND\pictures\build\Screenshot 1.png
+![Screenshot2](" https://drive.google.com/file/d/1f34B74zQ9d3h1jUOe5rRgSpDtF2u-tV2/view?usp=drive_link ")
 ![Screenshot2](" https://drive.google.com/file/d/1UIGRci5uVWJJ-1nNGx1azQmG5zKPRMzm/view?usp=drive_link ")
-![Screenshot3]("https://drive.google.com/file/d/1Gtcet2paLcjKgaygUn8YYj-orF1USfKZ/view?usp=drive_link")
+![Screenshot3](" https://drive.google.com/file/d/1Gtcet2paLcjKgaygUn8YYj-orF1USfKZ/view?usp=drive_link ")
 
 # Diagrams
 ## Architecture
@@ -81,17 +81,17 @@ C:\Users\user\ANT-MIND\ANT-MIND\pictures\build\Screenshot 1.png
    └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 # Build Photos
-![Components](https://drive.google.com/file/d/1F2I9qBDHKbQBT3tij3ZES0OxKiaN7ikl/view?usp=drive_link) 
-![Components](https://drive.google.com/file/d/1BND7x9rm8Ru7DYtARoOAaoA7jAkNzj85/view?usp=drive_link)
-![Build](https://drive.google.com/file/d/1riMM4nlpSG0JIB0S5Fp33w7qmPWDOhFS/view?usp=drive_link)
-![Build](https://drive.google.com/file/d/1ZFKBz6_8JAaMVchxA4Q8LIXesfBkNBtl/view?usp=drive_link)
-![Build](https://drive.google.com/file/d/13NaXMxQ0lzcjUAd0R-mfKUvXMg-Iq7GO/view?usp=drive_link)
-![Final](https://drive.google.com/file/d/13LO-RM5G_hK0LE8kC3kbYz9Id3xuYPNl/view?usp=drive_link)
+![Components](" https://drive.google.com/file/d/1F2I9qBDHKbQBT3tij3ZES0OxKiaN7ikl/view?usp=drive_link ") 
+![Components](" https://drive.google.com/file/d/1BND7x9rm8Ru7DYtARoOAaoA7jAkNzj85/view?usp=drive_link ")
+![Build](" https://drive.google.com/file/d/1riMM4nlpSG0JIB0S5Fp33w7qmPWDOhFS/view?usp=drive_link ")
+![Build](" https://drive.google.com/file/d/1ZFKBz6_8JAaMVchxA4Q8LIXesfBkNBtl/view?usp=drive_link ")
+![Build](" https://drive.google.com/file/d/13NaXMxQ0lzcjUAd0R-mfKUvXMg-Iq7GO/view?usp=drive_link ")
+![Final](" https://drive.google.com/file/d/13LO-RM5G_hK0LE8kC3kbYz9Id3xuYPNl/view?usp=drive_link ")
 
 
 ### Project Demo
 # Video
-![vedio](https://drive.google.com/file/d/1-HBz79wH6puewb1KICc2RHM-9-cmuAzA/view?usp=sharing)
+![vedio](" https://drive.google.com/file/d/1-HBz79wH6puewb1KICc2RHM-9-cmuAzA/view?usp=sharing ")
 
 ## Team Contributions
 - [Chandra Prakash N]: [Bankend + Iteration]
