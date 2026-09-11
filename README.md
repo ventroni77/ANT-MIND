@@ -4,6 +4,7 @@
 
 Team Members
 Team Lead: [Chandra Prakash N] - [College of engineering Chengannur]
+
 Member 2: [Faheem Ibnu Rashif] - [College of engineering Chengannur]
 
 ### Project Description
@@ -41,6 +42,7 @@ bash
 
 # Terminal 2 — frontend
 cd client
+
 npm run dev
 
 Then open http://localhost:5173 in your browser.
