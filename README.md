@@ -30,9 +30,11 @@ bash
 cp .env.example .env          # add your GROQ_API_KEY
 
 python -m venv .venv
+
 .venv/Scripts/python -m pip install -r requirements.txt
 
 cd client
+
 npm install
 
 ### Run
