@@ -28,8 +28,12 @@ export default function IdeologyTracker() {
 
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {sorted.length === 0 && (
-          <div className="p-3 font-mono text-[11px] text-white/25">
-            &gt; no ideas have been had
+          <div className="p-3">
+            <div className="font-mono text-[11px] text-white/30">&gt; no ideas have been had</div>
+            <div className="mt-2 text-[11.5px] leading-snug text-white/40">
+              When a thinking ant reaches a conclusion it names it, and the idea spreads to ants
+              that cannot think. Each one carries a behaviour with it.
+            </div>
           </div>
         )}
         {sorted.map((m) => {

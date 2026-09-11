@@ -4,7 +4,7 @@ import type { ThoughtEvent } from './sim/World';
 import type { Meme } from './sim/Memes';
 import type { MetricSample } from './sim/Metrics';
 
-export type Tool = 'none' | 'chalk' | 'food' | 'wall' | 'eraser';
+export type Tool = 'none' | 'chalk' | 'food' | 'wall' | 'eraser' | 'smite';
 
 export interface MetricsView {
   foodPerMin: number;
@@ -44,6 +44,16 @@ interface State {
   setTool: (t: Tool) => void;
   handActive: boolean;
   setHandActive: (v: boolean) => void;
+
+  brushSize: number;
+  setBrushSize: (v: number) => void;
+
+  helpOpen: boolean;
+  setHelpOpen: (v: boolean) => void;
+  welcomeOpen: boolean;
+  setWelcomeOpen: (v: boolean) => void;
+  chromeHidden: boolean;
+  toggleChrome: () => void;
 
   paused: boolean;
   setPaused: (v: boolean) => void;
@@ -85,6 +95,8 @@ interface State {
   requestReset: () => void;
   stepToken: number;
   requestStep: () => void;
+  fitToken: number;
+  requestFit: () => void;
 }
 
 export const useStore = create<State>((set) => ({
@@ -95,6 +107,16 @@ export const useStore = create<State>((set) => ({
   setTool: (t) => set({ tool: t }),
   handActive: false,
   setHandActive: (v) => set({ handActive: v }),
+
+  brushSize: 1,
+  setBrushSize: (v) => set({ brushSize: v }),
+
+  helpOpen: false,
+  setHelpOpen: (v) => set({ helpOpen: v }),
+  welcomeOpen: true,
+  setWelcomeOpen: (v) => set({ welcomeOpen: v }),
+  chromeHidden: false,
+  toggleChrome: () => set((s) => ({ chromeHidden: !s.chromeHidden })),
 
   paused: false,
   setPaused: (v) => set({ paused: v }),
@@ -150,4 +172,6 @@ export const useStore = create<State>((set) => ({
   requestReset: () => set((s) => ({ resetToken: s.resetToken + 1 })),
   stepToken: 0,
   requestStep: () => set((s) => ({ stepToken: s.stepToken + 1 })),
+  fitToken: 0,
+  requestFit: () => set((s) => ({ fitToken: s.fitToken + 1 })),
 }));

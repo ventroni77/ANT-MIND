@@ -82,10 +82,11 @@ export default function Stage() {
       let lastPan = { x: 0, y: 0 };
 
       const applyTool = (wx: number, wy: number) => {
-        const tool = useStore.getState().tool;
-        if (tool === 'chalk') world.phero.paint(wx, wy, 'chalk', 1, 1);
-        else if (tool === 'wall') world.phero.setWall(wx, wy, true, 1);
-        else if (tool === 'eraser') world.phero.erase(wx, wy, 3);
+        const st2 = useStore.getState();
+        const r = st2.brushSize;
+        if (st2.tool === 'chalk') world.phero.paint(wx, wy, 'chalk', 1, r);
+        else if (st2.tool === 'wall') world.phero.setWall(wx, wy, true, r);
+        else if (st2.tool === 'eraser') world.phero.erase(wx, wy, r + 2);
       };
 
       const onDown = (e: PointerEvent) => {
@@ -94,7 +95,7 @@ export default function Stage() {
         world.cursor.y = p.y;
         const tool = useStore.getState().tool;
 
-        if (e.shiftKey) {
+        if (e.shiftKey || tool === 'smite') {
           world.smite(p.x, p.y);
           return;
         }
@@ -176,20 +177,28 @@ export default function Stage() {
       });
 
       const onKey = (e: KeyboardEvent) => {
+        if (e.target instanceof HTMLInputElement) return;
         const s = useStore.getState();
         switch (e.key) {
           case '1': s.setTool(s.tool === 'chalk' ? 'none' : 'chalk'); break;
           case '2': s.setTool(s.tool === 'food' ? 'none' : 'food'); break;
           case '3': s.setTool(s.tool === 'wall' ? 'none' : 'wall'); break;
+          case '4': s.setTool(s.tool === 'smite' ? 'none' : 'smite'); break;
           case 'e': case 'E': s.setTool(s.tool === 'eraser' ? 'none' : 'eraser'); break;
           case 'g': case 'G': s.setHandActive(true); break;
           case 'm': case 'M': s.toggleMuted(); break;
+          case 'h': case 'H': s.toggleChrome(); break;
+          case '?': s.setHelpOpen(!s.helpOpen); break;
           case '~': case '`': s.toggleOperator(); break;
           case 'f': case 'F': fit(); break;
           case ' ': e.preventDefault(); s.setPaused(!s.paused); break;
           case '.': s.requestStep(); break;
           case 'r': case 'R': s.requestReset(); break;
-          case 'Escape': s.setInspect(null); s.setTool('none'); break;
+          case 'Escape':
+            if (s.welcomeOpen) s.setWelcomeOpen(false);
+            else if (s.helpOpen) s.setHelpOpen(false);
+            else { s.setInspect(null); s.setTool('none'); }
+            break;
         }
       };
       const onKeyUp = (e: KeyboardEvent) => {
@@ -224,6 +233,8 @@ export default function Stage() {
       let lastUi = 0;
       let lastStepToken = st.stepToken;
       let lastResetToken = st.resetToken;
+      let lastFitToken = st.fitToken;
+      let lastCursorTool = '';
 
       const onFirstGesture = () => initAudio();
       window.addEventListener('pointerdown', onFirstGesture, { once: true });
@@ -239,6 +250,15 @@ export default function Stage() {
           world.nAnts = C.N_ANTS;
           world.reset(s.seed);
           cutVoices();
+        }
+        if (s.fitToken !== lastFitToken) {
+          lastFitToken = s.fitToken;
+          fit();
+        }
+        if (s.tool !== lastCursorTool) {
+          lastCursorTool = s.tool;
+          app.canvas.style.cursor =
+            s.tool === 'none' ? 'grab' : s.tool === 'smite' ? 'pointer' : 'crosshair';
         }
 
         const prevK = world.consciousness;

@@ -30,6 +30,7 @@ export default function ThoughtFeed() {
   const thoughts = useStore((s) => s.thoughts);
   const source = useStore((s) => s.brainSource);
   const latency = useStore((s) => s.brainLatency);
+  const k = useStore((s) => s.consciousness);
   const [, tickNow] = useState(0);
   const hovering = useRef(false);
 
@@ -59,8 +60,21 @@ export default function ThoughtFeed() {
         onMouseLeave={() => (hovering.current = false)}
       >
         {thoughts.length === 0 && (
-          <div className="p-3 font-mono text-[11px] text-white/25">
-            &gt; no cognitive activity detected
+          <div className="p-3">
+            <div className="font-mono text-[11px] text-white/30">
+              &gt; no cognitive activity detected
+            </div>
+            <div className="mt-2 text-[11.5px] leading-snug text-white/40">
+              {k === 0 ? (
+                <>
+                  Every ant is running on instinct. Raise the{' '}
+                  <span className="text-purple-300">consciousness</span> slider to give a few of
+                  them an inner life.
+                </>
+              ) : (
+                <>Thinking ants are forming their first impressions. Thoughts arrive shortly.</>
+              )}
+            </div>
           </div>
         )}
         {thoughts.map((t, i) => (
