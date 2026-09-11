@@ -46,7 +46,7 @@ npm run dev
 Then open http://localhost:5173 in your browser.
 
 # Screenshots (Add at least 3)
-![Screenshot1](C:\Users\user\ANT-MIND\ANT-MIND\pictures\build\Screenshot 2026-09-12 031140.png)
+C:\Users\user\ANT-MIND\ANT-MIND\pictures\build\Screenshot 1.png
 ![Screenshot2](https://drive.google.com/file/d/1UIGRci5uVWJJ-1nNGx1azQmG5zKPRMzm/view?usp=drive_link)
 ![Screenshot3](https://drive.google.com/file/d/1Gtcet2paLcjKgaygUn8YYj-orF1USfKZ/view?usp=drive_link)
 
