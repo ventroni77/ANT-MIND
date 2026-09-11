@@ -6,7 +6,7 @@ Drag the consciousness slider and watch measured food throughput collapse by ~85
 
 ## The paradox
 
-Real ants are dumb on purpose. An ant deposits pheromone, follows the strongest gradient it can smell, and never forms an opinion about any of it. Shorter paths get walked more often, so they accumulate more pheromone, so they get walked more often still. The route optimises itself. No ant knows the route exists.
+Real ants are dumb on purpose. An ant deposits pheromone, follows the strongest gradient it can smell, and never forms an opinion about any of it. Shorter paths get walked more often, so they accumulate more pheromone, so they get walked more often still. The route optimises itself. No ant knows the route exists..
 
 This is **stigmergy**: coordination through traces left in a shared environment rather than through communication or deliberation. It works precisely *because* no individual reasons about the global picture. There is no plan to disagree with.
 
