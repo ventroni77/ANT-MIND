@@ -58,7 +58,7 @@ Source URL : https://ant-front.vercel.app/
 
 This is a frontend-only build, deployed on the guidance of the TinkerHub coordinators and mentors for the event, who asked that every team submit a working link. It shows the interface and the design. The conversation itself runs on a Node server that cannot be made public, so the talking part is not live at that URL.
 
-Landing Page URL : https://github.com/ventroni77/ANT-MIND
+Landing Page : https://drive.google.com/file/d/1fcomMUt1tjfpwwqfN993Lt6FKnOEioS2/view?usp=drivesdk
 
 # Screenshots (Add at least 3)
 ![Screenshot2](" https://drive.google.com/file/d/1f34B74zQ9d3h1jUOe5rRgSpDtF2u-tV2/view?usp=drive_link ")
